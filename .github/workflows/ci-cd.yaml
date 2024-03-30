@@ -10,19 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Set up Google Cloud SDK
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          project_id: my-project-w12-418722
+          python-version: '3.x'
+
+      - name: Install Google Cloud SDK
+        run: |
+          curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-385.0.0-linux-x86_64.tar.gz
+          tar -xzf google-cloud-sdk-385.0.0-linux-x86_64.tar.gz
+          ./google-cloud-sdk/install.sh --quiet
+          echo "$GCP_SA_KEY" > /tmp/gcp-key.json
+          ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
+          ./google-cloud-sdk/bin/gcloud config set project your-project-id
 
       - name: Deploy to Google Cloud Functions
         run: |
-          gcloud functions deploy my-cloud-function \
+          ./google-cloud-sdk/bin/gcloud functions deploy my-cloud-function \
             --runtime python37 \
             --trigger-http \
             --entry-point main \
             --set-env-vars TEAM_MEMBER_1="Mosiah",TEAM_MEMBER_2="Ryan",TEAM_MEMBER_3="Ian",TEAM_MEMBER_4="David" \
-            --source=. \
-            --project my-project-w12-418722
+            --source=.
+
+    env:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
