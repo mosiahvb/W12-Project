@@ -20,7 +20,7 @@ jobs:
           curl -sSL https://sdk.cloud.google.com | bash
           exec -l $SHELL
           gcloud auth activate-service-account --key-file=<(echo "${{ secrets.GCP_SA_KEY }}")
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud config set project my-project-w12-418722
 
       - run: |
           gcloud functions deploy my-cloud-function \
@@ -29,4 +29,4 @@ jobs:
             --entry-point main \
             --set-env-vars TEAM_MEMBER_1="Mosiah",TEAM_MEMBER_2="Ryan",TEAM_MEMBER_3="Ian",TEAM_MEMBER_4="David" \
             --source=. \
-            --project ${{ secrets.GCP_PROJECT_ID }}
+            --project my-project-w12-418722
