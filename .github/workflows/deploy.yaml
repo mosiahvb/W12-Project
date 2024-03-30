@@ -21,6 +21,6 @@ jobs:
 
       - name: Upload file to Google Cloud Storage
         run: |
-          gsutil cp data.txt gs://your-bucket-name
+          gsutil cp data.txt gs://tryingto_work_12
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
