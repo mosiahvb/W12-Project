@@ -13,14 +13,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Docker
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
+      - name: Install gcloud CLI
+        uses: google-github-actions/setup-gcloud@main
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Deploy to Google Cloud Functions
         run: |
-          docker run --rm -v $(pwd):/workspace -w /workspace google/cloud-sdk:latest gcloud functions deploy my-cloud-function \
+          gcloud functions deploy my-cloud-function \
             --runtime python37 \
             --trigger-http \
             --entry-point main \
