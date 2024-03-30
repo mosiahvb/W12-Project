@@ -12,17 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-python@v2
+      - name: Set up Google Cloud SDK
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
         with:
-          python-version: '3.x'
+          project_id: my-project-w12-418722
 
-      - run: |
-          curl -sSL https://sdk.cloud.google.com | bash
-          exec -l $SHELL
-          gcloud auth activate-service-account --key-file=<(echo "${{ secrets.GCP_SA_KEY }}")
-          gcloud config set project my-project-w12-418722
-
-      - run: |
+      - name: Deploy to Google Cloud Functions
+        run: |
           gcloud functions deploy my-cloud-function \
             --runtime python37 \
             --trigger-http \
